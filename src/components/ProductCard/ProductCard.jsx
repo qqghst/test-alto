@@ -3,27 +3,36 @@ import Button from '../button/Button';
 import style from './ProductCard.module.scss'
 
 const ProductCard = ({ image_url, name, price, availability, color, short_desc }) => {
-    // const [showDetails, setShowDetails] = useState(false);
-    const [bg, setBg] = useState(['']);
+    const [colorBg, setColorBg] = useState('')
 
-    const changeBg = () => {
+    const changeColor = () => {
         if (availability === 0) {
-            setBg('#A6C3EE')
-        }
-        if (availability !== 0) {
-            setBg('#76CB22')
+            // availability = 'Под заказ'
+            setColorBg('#A6C3EE')
+        } else {
+            // availability = 'В наличии'
+            setColorBg('#76CB22')
         }
     }
 
     useEffect(() => {
-        changeBg()
+        changeColor()
     }, [])
 
-    if (availability === 0) {
-        availability = 'Под заказ'
-    } else {
-        availability = 'В наличии'
+
+    const [word, setWord] = useState('')
+
+    const changeWord = () => {
+        if (availability === 0) {
+            setWord('Под заказ')
+        } else {
+            setWord('В наличии')
+        }
     }
+
+    useEffect(() => {
+        changeWord()
+    }, [])
 
     return (
         <div className={`${style.dropShadow} flex flex-row mx-[16px] lg:mx-0 `}>
@@ -32,7 +41,7 @@ const ProductCard = ({ image_url, name, price, availability, color, short_desc }
                     <img className='w-[265px] h-[265px]' src={image_url} alt={name} />
                     <hr className='' />
                     <div className='flex flex-col mt-[18px] ml-[20px] gap-[18px]'>
-                        <p className={`bg-${bg} w-[84px] h-[27px] text-white text-center`}>{availability}</p>
+                        <p style={{ backgroundColor: colorBg }} className={`w-[90px] h-[30px] text-black text-center align-center`}>{word}</p>
                         <p className='text-[16px] text-[#4F545F] underline'>{name}</p>
                         <p className='text-[16px] text-[#4F545F] font-bold'>{`${price}P`}</p>
                     </div>
