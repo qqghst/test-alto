@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import ProductList from "./components/ProductList/ProductList";
+import { IProduct } from "./types";
+import Pagination from "./components/pagination/Pagination";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [products, setProducts] = useState<IProduct[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage, setPostsPerPage] = useState(3);
+
+    async function fetchProducts() {
+        try {
+            await axios
+                .get('http://testtask.alto.codes/front-products.php')
+                .then(data => setProducts(data.data.products))
+                .then(data => console.log(data))
+        } catch (e: unknown) {
+            console.log(e)
+        }
+    }
+
+    useEffect(() => {
+        fetchProducts()
+    }, [])
+
+    const lastPostIndex = currentPage * postsPerPage;
+    const firstPostIndex = lastPostIndex - postsPerPage;
+    const currentPosts = products.slice(firstPostIndex, lastPostIndex);
+
+    return (
+        <div>
+            <ProductList products={currentPosts}/>
+            <Pagination
+                totalPosts={products.length}
+                postsPerPage={postsPerPage}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage} />
+        </div>
+    );
 }
 
 export default App;
